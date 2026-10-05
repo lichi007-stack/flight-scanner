@@ -114,7 +114,7 @@
           <button id="refreshBtn" type="button" class="ghost">🔄 רענן תוצאות</button>
         </div>
       </div>
-      <p id="scanHelp" class="hidden" style="margin:12px 0 0;font-size:.92rem;line-height:1.6">נפתח עמוד ההרצה ב-GitHub. לחצו שם על הכפתור האפור <b>Run workflow</b> ואז על הכפתור הירוק <b>Run workflow</b>. אחרי כדקה חזרו לכאן ולחצו <b>רענן תוצאות</b>. אם יש עסקה, תגיע גם התראה למייל.</p>
+      <p id="scanMsg" class="hidden" style="margin:12px 0 0;font-size:.92rem;line-height:1.6"></p>
     </div>
 
     <div class="card">
@@ -301,9 +301,28 @@ $("loginForm").onsubmit = async e => {
   if (r.error) return msg("התחברות נכשלה: " + r.error.message);
   show(true); load();
 };
-$("scanNow").onclick = () => {
-  window.open("https://github.com/lichi007-stack/flight-scanner/actions/workflows/scan.yml", "_blank", "noopener");
-  $("scanHelp").classList.remove("hidden");
+$("scanNow").onclick = async () => {
+  const b = $("scanNow"), m = $("scanMsg");
+  const show = (x) => { m.textContent = x; m.classList.remove("hidden"); };
+  b.disabled = true; b.textContent = "מפעיל...";
+  try {
+    const { data, error } = await sb.functions.invoke("scan-now");
+    if (error || !data || !data.ok) throw new Error((data && data.error) || (error && error.message) || "שגיאה");
+    show("✅ הסריקה התחילה! התוצאות יתעדכנו כאן בעוד כדקה. אם יש עסקה, תגיע גם התראה למייל.");
+    let n = 60;
+    b.textContent = "סורק... " + n;
+    const iv = setInterval(async () => {
+      n--; b.textContent = "סורק... " + n;
+      if (n <= 0) {
+        clearInterval(iv);
+        try { await load(); show("✅ הסריקה הסתיימה והתוצאות עודכנו."); } catch (e) {}
+        b.disabled = false; b.textContent = "סרוק עכשיו";
+      }
+    }, 1000);
+  } catch (e) {
+    show("❌ לא הצלחנו להפעיל סריקה: " + e.message);
+    b.disabled = false; b.textContent = "סרוק עכשיו";
+  }
 };
 $("refreshBtn").onclick = async () => { const b = $("refreshBtn"); b.disabled = true; b.textContent = "מרענן..."; try { await load(); } finally { b.disabled = false; b.textContent = "🔄 רענן תוצאות"; } };
 $("logout").onclick = async () => { await sb.auth.signOut(); show(false); };
