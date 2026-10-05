@@ -106,6 +106,17 @@
       <div class="stat"><b>08:00</b><small>סריקה יומית</small></div>
     </div>
 
+    <div class="card" id="scanCard">
+      <div class="row between">
+        <div><h2 style="margin:0 0 4px">⚡ סריקה ידנית</h2><small style="opacity:.75">לא רוצים לחכות ל-08:00? אפשר להפעיל סריקה עכשיו.</small></div>
+        <div class="row">
+          <button id="scanNow" type="button" class="btn">סרוק עכשיו</button>
+          <button id="refreshBtn" type="button" class="ghost">🔄 רענן תוצאות</button>
+        </div>
+      </div>
+      <p id="scanHelp" class="hidden" style="margin:12px 0 0;font-size:.92rem;line-height:1.6">נפתח עמוד ההרצה ב-GitHub. לחצו שם על הכפתור האפור <b>Run workflow</b> ואז על הכפתור הירוק <b>Run workflow</b>. אחרי כדקה חזרו לכאן ולחצו <b>רענן תוצאות</b>. אם יש עסקה, תגיע גם התראה למייל.</p>
+    </div>
+
     <div class="card">
       <h2>✨ מעקב חדש</h2>
       <form id="form">
@@ -290,6 +301,11 @@ $("loginForm").onsubmit = async e => {
   if (r.error) return msg("התחברות נכשלה: " + r.error.message);
   show(true); load();
 };
+$("scanNow").onclick = () => {
+  window.open("https://github.com/lichi007-stack/flight-scanner/actions/workflows/scan.yml", "_blank", "noopener");
+  $("scanHelp").classList.remove("hidden");
+};
+$("refreshBtn").onclick = async () => { const b = $("refreshBtn"); b.disabled = true; b.textContent = "מרענן..."; try { await load(); } finally { b.disabled = false; b.textContent = "🔄 רענן תוצאות"; } };
 $("logout").onclick = async () => { await sb.auth.signOut(); show(false); };
 
 (async function init() {
