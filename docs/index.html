@@ -3,6 +3,264 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0e9aa7">
+<title>סורק טיסות זולות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root { --bg:#f3fafb; --card:#fff; --text:#12303f; --muted:#5f7a88; --line:#dcecf0; --accent:#0e9aa7; --accent2:#ff7a45;
+    --good:#12945a; --goodbg:#e2f7ec; --warn:#b45309; --warnbg:#fff1dd; --bad:#c62828; --field:#f5fbfc;
+    --sky1:#8fdcea; --sky2:#ffd9b0; --shadow:0 10px 30px rgba(14,90,110,.10); }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0b1a22; --card:#12262f; --text:#e6f3f6; --muted:#8fb0bc; --line:#1f3b47; --accent:#37c5d1;
+    --good:#4ade9b; --goodbg:#10382a; --warn:#fbbf6a; --warnbg:#3a2a12; --bad:#ff7b7b; --field:#0f202a;
+    --sky1:#0f4b5b; --sky2:#6b4a5e; --shadow:0 10px 30px rgba(0,0,0,.35); } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:"Heebo",system-ui,-apple-system,"Segoe UI",Arial,sans-serif; line-height:1.5; }
+  .hero { position:relative; overflow:hidden; padding:34px 16px 92px; background:linear-gradient(165deg,var(--sky1),var(--sky2)); color:#0b3954; }
+  @media (prefers-color-scheme: dark) { .hero { color:#eaf7fa; } }
+  .hero-in { position:relative; z-index:2; max-width:900px; margin:0 auto; }
+  .badge { display:inline-block; padding:4px 14px; border-radius:99px; background:rgba(255,255,255,.55); font-weight:700; font-size:.85rem; letter-spacing:.04em; backdrop-filter:blur(4px); }
+  @media (prefers-color-scheme: dark) { .badge { background:rgba(255,255,255,.12); } }
+  h1 { font-size:clamp(1.9rem,6vw,2.9rem); line-height:1.15; margin:14px 0 8px; font-weight:800; }
+  .sub { max-width:560px; margin:0; font-size:1.05rem; opacity:.85; }
+  .sun { position:absolute; top:26px; right:7%; width:96px; height:96px; border-radius:50%; background:radial-gradient(circle at 35% 35%,#fff8c9,#ffb347); box-shadow:0 0 70px 24px rgba(255,190,90,.5); }
+  .cloud { position:absolute; height:20px; width:90px; border-radius:99px; background:rgba(255,255,255,.8); }
+  .cloud::before { content:""; position:absolute; top:-12px; right:16px; width:38px; height:30px; border-radius:50%; background:inherit; }
+  .c1 { top:70px; left:12%; } .c2 { top:130px; left:46%; transform:scale(.7); opacity:.8; }
+  @media (prefers-color-scheme: dark) { .cloud { background:rgba(255,255,255,.14); } .sun { background:radial-gradient(circle at 35% 35%,#fff,#cfd9ff); box-shadow:0 0 60px 18px rgba(200,215,255,.25); } }
+  .plane { position:absolute; top:40px; left:0; font-size:2rem; z-index:1; animation:fly 16s linear infinite; }
+  @keyframes fly { from { transform:translateX(-12vw) rotate(-4deg); } to { transform:translateX(112vw) rotate(-4deg); } }
+  @media (prefers-reduced-motion: reduce) { .plane { animation:none; left:20%; } }
+  .wave { position:absolute; bottom:-1px; left:0; width:100%; height:64px; z-index:2; display:block; }
+  .wave path { fill:var(--bg); }
+  .wrap { position:relative; z-index:3; max-width:900px; margin:-48px auto 40px; padding:0 16px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:20px; padding:20px; margin-bottom:18px; box-shadow:var(--shadow); }
+  .card h2 { margin:0 0 14px; font-size:1.15rem; font-weight:800; }
+  label { display:block; font-size:.82rem; font-weight:500; color:var(--muted); margin-bottom:5px; }
+  input, select, button { font:inherit; }
+  input, select { width:100%; padding:11px 12px; border:1.5px solid var(--line); border-radius:12px; background:var(--field); color:var(--text); outline:none; transition:border-color .15s, box-shadow .15s; }
+  input:focus, select:focus { border-color:var(--accent); box-shadow:0 0 0 4px rgba(14,154,167,.15); }
+  .pfx { position:relative; } .pfx span { position:absolute; inset-inline-start:12px; top:50%; transform:translateY(-50%); color:var(--muted); font-weight:700; } .pfx input { padding-inline-start:28px; }
+  .btn { cursor:pointer; border:none; border-radius:12px; padding:12px 22px; font-weight:700; color:#fff; background:linear-gradient(135deg,var(--accent),#14b8a6 60%,#2dd4bf); box-shadow:0 6px 16px rgba(14,154,167,.3); transition:transform .12s, box-shadow .12s; }
+  .btn:hover { transform:translateY(-1px); box-shadow:0 10px 20px rgba(14,154,167,.35); }
+  .btn.full { width:100%; }
+  .ghost { cursor:pointer; background:transparent; color:var(--text); border:1.5px solid var(--line); border-radius:10px; padding:6px 12px; font-size:.85rem; }
+  .ghost:hover { border-color:var(--accent); color:var(--accent); } .ghost.danger:hover { border-color:var(--bad); color:var(--bad); }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px; }
+  .row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .between { justify-content:space-between; }
+  .check { display:flex; align-items:center; gap:8px; margin:0; font-size:.95rem; color:var(--text); cursor:pointer; } .check input { width:18px; height:18px; accent-color:var(--accent); }
+  .hidden { display:none !important; }
+  #msg { background:var(--warnbg); color:var(--bad); border-radius:12px; padding:0 14px; max-height:0; overflow:hidden; transition:all .2s; font-weight:500; }
+  #msg.on { padding:10px 14px; max-height:120px; margin-bottom:14px; }
+  .auth { max-width:430px; margin:0 auto 18px; }
+  .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:18px; }
+  .stat { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:12px; text-align:center; box-shadow:var(--shadow); }
+  .stat b { display:block; font-size:1.5rem; font-weight:800; color:var(--accent); } .stat small { color:var(--muted); font-size:.78rem; }
+  .watch { display:grid; grid-template-columns:1fr auto; gap:14px; border-inline-start:6px solid var(--accent); }
+  .watch.deal { border-inline-start-color:var(--good); } .watch.paused { opacity:.6; border-inline-start-color:var(--muted); }
+  @media (max-width:560px) { .watch { grid-template-columns:1fr; } .pricebox { text-align:start !important; } .stats { grid-template-columns:1fr; } .sun { width:70px; height:70px; } }
+  .dest { font-size:1.3rem; font-weight:800; } .code { color:var(--muted); font-weight:500; font-size:.9rem; margin-inline-start:6px; }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; margin:10px 0 12px; }
+  .chip { padding:3px 11px; border-radius:99px; background:var(--field); border:1px solid var(--line); font-size:.8rem; color:var(--muted); }
+  .pricebox { text-align:end; min-width:150px; }
+  .price { font-size:2rem; font-weight:800; line-height:1; } .good { color:var(--good); }
+  .pill { display:inline-block; padding:3px 10px; border-radius:99px; font-size:.78rem; font-weight:700; margin-bottom:8px; }
+  .pill.deal { background:var(--goodbg); color:var(--good); } .pill.wait { background:var(--warnbg); color:var(--warn); } .pill.none { background:var(--field); color:var(--muted); }
+  .small { color:var(--muted); font-size:.85rem; margin-top:6px; }
+  .empty { text-align:center; padding:34px 16px; } .empty .big { font-size:3rem; }
+  footer { text-align:center; color:var(--muted); font-size:.8rem; padding:0 16px 30px; }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="sun"></div><div class="cloud c1"></div><div class="cloud c2"></div><div class="plane">✈️</div>
+  <div class="hero-in">
+    <span class="badge">TLV · נתב"ג ✈ העולם</span>
+    <h1>לאן טסים הפעם? 🌴</h1>
+    <p class="sub">מגדירים יעד, תאריכים ותקציב, ואנחנו סורקים מחירים כל בוקר ושולחים לכם מייל כשנמצאה טיסה זולה.</p>
+  </div>
+  <svg class="wave" viewBox="0 0 1200 64" preserveAspectRatio="none" aria-hidden="true"><path d="M0,32 C150,64 350,0 600,32 C850,64 1050,8 1200,32 L1200,64 L0,64 Z"/></svg>
+</header>
+
+<main class="wrap">
+  <div id="msg" role="alert"></div>
+
+  <section id="auth" class="card auth hidden">
+    <h2>👋 ברוך שובך</h2>
+    <form id="loginForm">
+      <div style="margin-bottom:12px"><label>אימייל</label><input id="email" type="email" autocomplete="username" required></div>
+      <div style="margin-bottom:16px"><label>סיסמה</label><input id="password" type="password" autocomplete="current-password" required></div>
+      <button id="loginBtn" class="btn full" type="submit">התחברות</button>
+    </form>
+  </section>
+
+  <section id="app" class="hidden">
+    <div class="stats">
+      <div class="stat"><b id="stWatches">0</b><small>מעקבים פעילים</small></div>
+      <div class="stat"><b id="stDeals">0</b><small>עסקאות עכשיו 🔥</small></div>
+      <div class="stat"><b>08:00</b><small>סריקה יומית</small></div>
+    </div>
+
+    <div class="card">
+      <h2>✨ מעקב חדש</h2>
+      <form id="form">
+        <div class="grid">
+          <div><label>יעד</label><select id="dest"></select></div>
+          <div id="customWrap" class="hidden"><label>קוד IATA (3 אותיות)</label><input id="customCode" maxlength="3" placeholder="ATH"></div>
+          <div><label>מחודש</label><input id="mFrom" type="month" required></div>
+          <div><label>עד חודש</label><input id="mTo" type="month" required></div>
+          <div><label>ימי חופשה: מינימום</label><input id="minDays" type="number" min="1" max="60" value="4" required></div>
+          <div><label>ימי חופשה: מקסימום</label><input id="maxDays" type="number" min="1" max="60" value="7" required></div>
+          <div><label>מחיר מקסימלי הלוך-חזור</label><div class="pfx"><span>$</span><input id="maxPrice" type="number" min="1" required></div></div>
+        </div>
+        <div class="row between" style="margin-top:16px">
+          <label class="check"><input id="direct" type="checkbox"> טיסה ישירה בלבד</label>
+          <button type="submit" class="btn">הוספת מעקב</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="row between" style="margin:22px 4px 12px">
+      <h2 style="margin:0;font-size:1.2rem">🧳 המעקבים שלי</h2>
+      <button id="logout" class="ghost">התנתקות</button>
+    </div>
+    <div id="list"></div>
+  </section>
+</main>
+<footer>המחירים ממטמון של חיפושי משתמשים ועשויים להשתנות. כדאי לאמת לפני הזמנה.</footer>
+
+<script>
+// ===== הגדרות חיבור ל-Supabase (המפתח ציבורי, לא service_role) =====
+const SUPABASE_URL = "https://oitjbsjwfycydasdctdh.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9pdGpic2p3ZnljeWRhc2RjdGRoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTExMzMzNDAsImV4cCI6MjEwNjcwOTM0MH0.-09ZaOZFNhCcbHKpxVVxkt2zEyxT8fnX44_Co8ZSwcg";
+
+const DESTINATIONS = [
+  ["ATH","אתונה"],["LCA","לרנקה"],["PFO","פאפוס"],["RHO","רודוס"],["HER","הרקליון (כרתים)"],["SKG","סלוניקי"],
+  ["LON","לונדון"],["PAR","פריז"],["ROM","רומא"],["MIL","מילאנו"],["BCN","ברצלונה"],["MAD","מדריד"],
+  ["LIS","ליסבון"],["AMS","אמסטרדם"],["BER","ברלין"],["VIE","וינה"],["PRG","פראג"],["BUD","בודפשט"],
+  ["WAW","ורשה"],["KRK","קרקוב"],["BEG","בלגרד"],["TIA","טירנה"],["SOF","סופיה"],["BUH","בוקרשט"],
+  ["IST","איסטנבול"],["DXB","דובאי"],["AUH","אבו דאבי"],["NYC","ניו יורק"],["BKK","בנגקוק"],["TYO","טוקיו"],
+  ["__other","אחר (הזנת קוד)..."]
+];
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmtDate = d => { if (!d) return ""; const p = d.split("-"); return p[2] + "/" + p[1] + "/" + p[0]; };
+const fmtMonth = m => { const p = m.split("-"); return p[1] + "/" + p[0]; };
+const msg = t => { const el = $("msg"); el.textContent = t || ""; el.classList.toggle("on", !!t); };
+let sb;
+
+DESTINATIONS.forEach(d => { const o = document.createElement("option"); o.value = d[0]; o.textContent = d[0] === "__other" ? d[1] : d[1] + " (" + d[0] + ")"; $("dest").appendChild(o); });
+$("dest").onchange = () => $("customWrap").classList.toggle("hidden", $("dest").value !== "__other");
+
+function show(loggedIn) {
+  $("auth").classList.toggle("hidden", loggedIn);
+  $("app").classList.toggle("hidden", !loggedIn);
+}
+
+async function load() {
+  const res = await sb.from("watches").select("*").order("created_at", { ascending: false });
+  if (res.error) return msg("שגיאה בטעינה: " + res.error.message);
+  const watches = res.data;
+  const ids = watches.map(w => w.id);
+  let latest = {};
+  if (ids.length) {
+    const h = await sb.from("price_history").select("*").in("watch_id", ids).order("scanned_on", { ascending: false }).limit(1000);
+    (h.data || []).forEach(r => { if (!latest[r.watch_id]) latest[r.watch_id] = r; });
+  }
+  const list = $("list"); list.innerHTML = "";
+  let deals = 0, active = 0;
+  if (!watches.length) {
+    list.innerHTML = '<div class="card empty"><div class="big">🏝️</div><b>עדיין אין מעקבים</b><div class="small">הוסיפו את היעד הראשון למעלה, והסריקה הבאה תתחיל לחפש בשבילכם.</div></div>';
+  }
+  watches.forEach(w => {
+    const h = latest[w.id];
+    const isDeal = !!h && h.min_price <= w.max_price;
+    if (w.active) { active++; if (isDeal) deals++; }
+    let status, priceHtml;
+    if (!h) {
+      status = '<span class="pill none">⏳ ממתין לסריקה</span>';
+      priceHtml = '<div class="small">הסריקה הבאה תעדכן כאן מחיר</div>';
+    } else {
+      status = isDeal ? '<span class="pill deal">🔥 מתחת לתקרה!</span>' : '<span class="pill wait">עדיין יקר</span>';
+      priceHtml = '<div class="price ' + (isDeal ? "good" : "") + '">$' + Math.round(h.min_price) + '</div>' +
+        '<div class="small">' + fmtDate(h.departure_at) + " ← " + fmtDate(h.return_at) + (h.transfers === 0 ? " · ישירה" : "") + '</div>' +
+        '<div class="small">נסרק ב-' + fmtDate(h.scanned_on) + '</div>';
+    }
+    const div = document.createElement("div");
+    div.className = "card watch" + (isDeal && w.active ? " deal" : "") + (w.active ? "" : " paused");
+    div.innerHTML =
+      '<div>' +
+        '<div class="dest">' + esc(w.destination_name || w.destination) + '<span class="code">' + esc(w.destination) + '</span></div>' +
+        '<div class="chips">' +
+          '<span class="chip">📅 ' + fmtMonth(w.month_from) + " – " + fmtMonth(w.month_to) + '</span>' +
+          '<span class="chip">🏖️ ' + w.min_days + "–" + w.max_days + ' ימים</span>' +
+          '<span class="chip">💰 עד $' + Math.round(w.max_price) + '</span>' +
+          (w.direct_only ? '<span class="chip">ישיר בלבד</span>' : "") +
+          (w.active ? "" : '<span class="chip">⏸️ מושהה</span>') +
+        '</div>' +
+        '<div class="row">' +
+          '<button class="ghost" data-act="edit">עריכת תקרה</button>' +
+          '<button class="ghost" data-act="toggle">' + (w.active ? "השהיה" : "הפעלה") + '</button>' +
+          '<button class="ghost danger" data-act="del">מחיקה</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="pricebox">' + status + priceHtml + '</div>';
+    div.querySelector('[data-act="edit"]').onclick = async () => {
+      const v = prompt("תקרת מחיר חדשה הלוך-חזור ($):", Math.round(w.max_price));
+      if (v === null) return;
+      const n = Number(v);
+      if (!(n > 0)) return msg("יש להזין מחיר חיובי");
+      msg("");
+      await sb.from("watches").update({ max_price: n }).eq("id", w.id); load();
+    };
+    div.querySelector('[data-act="toggle"]').onclick = async () => { await sb.from("watches").update({ active: !w.active }).eq("id", w.id); load(); };
+    div.querySelector('[data-act="del"]').onclick = async () => { if (confirm("למחוק את המעקב?")) { await sb.from("watches").delete().eq("id", w.id); load(); } };
+    list.appendChild(div);
+  });
+  $("stWatches").textContent = active;
+  $("stDeals").textContent = deals;
+}
+
+$("form").onsubmit = async e => {
+  e.preventDefault(); msg("");
+  let code = $("dest").value, name = $("dest").selectedOptions[0].textContent.replace(/ \(.*\)$/, "");
+  if (code === "__other") { code = $("customCode").value.trim().toUpperCase(); name = code; }
+  if (!/^[A-Z]{3}$/.test(code)) return msg("קוד יעד חייב להיות 3 אותיות באנגלית");
+  const row = { destination: code, destination_name: name, month_from: $("mFrom").value, month_to: $("mTo").value,
+    min_days: +$("minDays").value, max_days: +$("maxDays").value, max_price: +$("maxPrice").value, direct_only: $("direct").checked };
+  if (row.month_from > row.month_to) return msg("חודש ההתחלה חייב להיות לפני חודש הסיום");
+  if (row.min_days > row.max_days) return msg("מינימום הימים גדול מהמקסימום");
+  const r = await sb.from("watches").insert(row);
+  if (r.error) return msg("שגיאה בשמירה: " + r.error.message);
+  e.target.reset(); $("minDays").value = 4; $("maxDays").value = 7; $("customWrap").classList.add("hidden"); load();
+};
+
+$("loginForm").onsubmit = async e => {
+  e.preventDefault(); msg("");
+  const r = await sb.auth.signInWithPassword({ email: $("email").value, password: $("password").value });
+  if (r.error) return msg("התחברות נכשלה: " + r.error.message);
+  show(true); load();
+};
+$("logout").onclick = async () => { await sb.auth.signOut(); show(false); };
+
+(async function init() {
+  sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const s = await sb.auth.getSession();
+  show(!!s.data.session);
+  if (s.data.session) load();
+})();
+</script>
+</body>
+</html>
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>סורק טיסות זולות</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
