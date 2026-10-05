@@ -176,81 +176,72 @@ function skylineSVG() {
     '<path class="foam2" d="' + wave(350, 6, 60, false) + '"/><path class="foam2" d="' + wave(370, 6, 70, false) + '"/>' + boat + '</svg>';
 }
 function dogLogo() {
-  var s = 7;
-  function rnd() { s = (s * 9301 + 49297) % 233280; return s / 233280; }
-  // contorno peludo: puntas alrededor de una elipse
-  function fur(cx, cy, rx, ry, n, amp, a0, a1) {
-    var d = "", i, p0, k;
+  var P = Math.PI, K = "#3a2620", o = "";
+  function puff(cx, cy, rx, ry, n, d, a0, a1) {
+    var s = "", i, t, x, y, m, mx, my;
     for (i = 0; i <= n; i++) {
-      var t = a0 + (a1 - a0) * i / n, r = 1 + (i % 2 ? amp * (0.6 + rnd() * 0.8) : -amp * 0.25 * rnd());
-      var x = cx + Math.cos(t) * rx * r, y = cy + Math.sin(t) * ry * r;
-      if (i === 0) d += "M" + x.toFixed(1) + "," + y.toFixed(1);
-      else { var tm = a0 + (a1 - a0) * (i - 0.5) / n, rm = 1 - amp * 0.35; d += " Q" + (cx + Math.cos(tm) * rx * rm).toFixed(1) + "," + (cy + Math.sin(tm) * ry * rm).toFixed(1) + " " + x.toFixed(1) + "," + y.toFixed(1); }
+      t = a0 + (a1 - a0) * i / n; x = cx + Math.cos(t) * rx; y = cy + Math.sin(t) * ry;
+      if (i === 0) { s += "M" + x.toFixed(1) + "," + y.toFixed(1); continue; }
+      m = a0 + (a1 - a0) * (i - 0.5) / n; mx = cx + Math.cos(m) * rx * (1 + d); my = cy + Math.sin(m) * ry * (1 + d);
+      s += "Q" + mx.toFixed(1) + "," + my.toFixed(1) + " " + x.toFixed(1) + "," + y.toFixed(1);
     }
-    return d + "Z";
+    return s;
   }
-  function strands(cx, cy, rx, ry, n, len, a0, a1, col, w) {
-    var d = "";
-    for (var i = 0; i < n; i++) {
-      var t = a0 + (a1 - a0) * (i + rnd() * 0.6) / n, r0 = 0.45 + rnd() * 0.3;
-      var x0 = cx + Math.cos(t) * rx * r0, y0 = cy + Math.sin(t) * ry * r0, x1 = cx + Math.cos(t) * rx * (r0 + len), y1 = cy + Math.sin(t) * ry * (r0 + len);
-      d += "M" + x0.toFixed(1) + "," + y0.toFixed(1) + "Q" + ((x0 + x1) / 2 + (rnd() - 0.5) * 8).toFixed(1) + "," + ((y0 + y1) / 2).toFixed(1) + " " + x1.toFixed(1) + "," + y1.toFixed(1);
-    }
-    return '<path d="' + d + '" fill="none" stroke="' + col + '" stroke-width="' + w + '" stroke-linecap="round" opacity=".55"/>';
-  }
-  var P = Math.PI, o = "";
   o += '<svg class="logo" viewBox="0 0 400 400" role="img" aria-label="יצי"><defs>' +
-    '<linearGradient id="dbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#43c6e8"/><stop offset="1" stop-color="#1b9fb2"/></linearGradient>' +
-    '<radialGradient id="dsun" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff6c8"/><stop offset=".55" stop-color="#ffe49a" stop-opacity=".85"/><stop offset="1" stop-color="#ffd27a" stop-opacity="0"/></radialGradient>' +
-    '<radialGradient id="dfur" cx=".45" cy=".35" r=".75"><stop offset="0" stop-color="#fffdf6"/><stop offset=".6" stop-color="#f8e9cc"/><stop offset="1" stop-color="#e6c898"/></radialGradient>' +
-    '<linearGradient id="dear" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e2b479"/><stop offset="1" stop-color="#b9824d"/></linearGradient>' +
-    '<linearGradient id="dlens" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3b4a63"/><stop offset=".5" stop-color="#151c2b"/><stop offset="1" stop-color="#0b0f19"/></linearGradient>' +
-    '<linearGradient id="dpur" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9b6bd8"/><stop offset="1" stop-color="#5f3a9c"/></linearGradient>' +
-    '<clipPath id="dclip"><circle cx="200" cy="205" r="178"/></clipPath></defs>';
-  o += '<circle cx="200" cy="205" r="188" fill="#fff"/><circle cx="200" cy="205" r="178" fill="url(#dbg)"/>';
-  o += '<g clip-path="url(#dclip)"><circle cx="300" cy="100" r="70" fill="url(#dsun)"/></g>';
-  // rayos y nubes
-  o += '<g fill="#fff" opacity=".85"><ellipse cx="95" cy="95" rx="30" ry="9"/><ellipse cx="80" cy="88" rx="14" ry="9"/><ellipse cx="105" cy="84" rx="17" ry="11"/></g>';
+    '<linearGradient id="dbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#52cdf0"/><stop offset="1" stop-color="#1fa7b8"/></linearGradient>' +
+    '<radialGradient id="dsun" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fffbe0"/><stop offset=".6" stop-color="#ffe9a6" stop-opacity=".9"/><stop offset="1" stop-color="#ffe9a6" stop-opacity="0"/></radialGradient>' +
+    '<linearGradient id="dlens" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34425c"/><stop offset="1" stop-color="#0c111c"/></linearGradient>' +
+    '<clipPath id="dclip"><circle cx="200" cy="200" r="180"/></clipPath></defs>';
+  o += '<circle cx="200" cy="200" r="192" fill="#fff"/><circle cx="200" cy="200" r="180" fill="url(#dbg)" stroke="' + K + '" stroke-width="5"/>';
   o += '<g clip-path="url(#dclip)">';
-  // cuerpo
-  o += '<path d="' + fur(200, 395, 142, 115, 26, 0.12, P, 2 * P) + '" fill="url(#dfur)" stroke="#d3b27c" stroke-width="2"/>';
-  // arnes
-  o += '<path d="M118 300Q200 330 282 300L292 326Q200 362 108 326Z" fill="url(#dpur)"/><path d="M186 335H214L222 410H178Z" fill="url(#dpur)"/>';
-  o += '<g fill="#e9d8ff" opacity=".5"><circle cx="150" cy="318" r="4"/><circle cx="180" cy="326" r="4"/><circle cx="220" cy="326" r="4"/><circle cx="250" cy="318" r="4"/><circle cx="200" cy="360" r="4"/></g>';
-  o += '<circle cx="200" cy="334" r="9" fill="#ffd166" stroke="#c9922e" stroke-width="2"/>';
-  o += strands(200, 380, 130, 90, 22, 0.28, P * 1.05, P * 1.95, "#caa66f", 2.2);
+  o += '<circle cx="305" cy="95" r="78" fill="url(#dsun)"/>';
+  o += '<g fill="#fff" opacity=".9"><ellipse cx="92" cy="92" rx="34" ry="10"/><ellipse cx="76" cy="84" rx="15" ry="10"/><ellipse cx="104" cy="80" rx="19" ry="12"/></g>';
+  // sea + wave at bottom
+  o += '<path d="M0 330Q50 312 100 330T200 330T300 330T400 330V400H0Z" fill="#17a3b6" opacity=".55"/>';
+  // body
+  o += '<path d="' + puff(200, 400, 150, 118, 12, 0.1, P, 2 * P) + 'Z" fill="#fff3da" stroke="' + K + '" stroke-width="5" stroke-linejoin="round"/>';
+  o += '<path d="M70 392Q120 330 200 330Q280 330 330 392Z" fill="#f0d9b0" opacity=".55"/>';
+  // harness
+  o += '<path d="M112 306Q200 340 288 306L300 336Q200 376 100 336Z" fill="#8a5bd0" stroke="' + K + '" stroke-width="5" stroke-linejoin="round"/>';
+  o += '<path d="M184 346H216L226 410H174Z" fill="#8a5bd0" stroke="' + K + '" stroke-width="5" stroke-linejoin="round"/>';
+  o += '<path d="M124 312Q200 340 276 312L282 322Q200 352 118 322Z" fill="#b48cf0" opacity=".65"/>';
+  o += '<circle cx="200" cy="344" r="12" fill="#ffd45a" stroke="' + K + '" stroke-width="4"/><circle cx="196" cy="340" r="3.5" fill="#fff" opacity=".8"/>';
   o += '</g>';
-  // orejas
-  o += '<path d="' + fur(104, 215, 40, 78, 16, 0.1, 0.5 * P, 1.5 * P) + '" fill="url(#dear)" stroke="#a9733f" stroke-width="2" transform="rotate(14 104 215)"/>';
-  o += '<path d="' + fur(296, 215, 40, 78, 16, 0.1, -0.5 * P, 0.5 * P) + '" fill="url(#dear)" stroke="#a9733f" stroke-width="2" transform="rotate(-14 296 215)"/>';
-  o += '<path d="M94 170Q80 215 98 262M306 170Q320 215 302 262" fill="none" stroke="#f1d29c" stroke-width="3" stroke-linecap="round" opacity=".6"/>';
-  // cabeza
-  o += '<path d="' + fur(200, 215, 100, 92, 34, 0.1, 0, 2 * P) + '" fill="url(#dfur)" stroke="#d3b27c" stroke-width="2.4"/>';
-  o += strands(200, 215, 96, 88, 26, 0.3, 0, 2 * P, "#d7b983", 2);
-  // mechón de la cabeza
-  o += '<path d="M166 130Q160 106 176 96Q178 108 188 114Q192 98 204 92Q206 106 214 114Q224 100 236 100Q232 114 236 128Z" fill="url(#dfur)" stroke="#d3b27c" stroke-width="2"/>';
-  // hocico
-  o += '<ellipse cx="200" cy="262" rx="58" ry="44" fill="#fffaf0" stroke="#e4c998" stroke-width="2"/>';
-  o += strands(200, 262, 56, 42, 14, 0.2, 0.1 * P, 0.9 * P, "#e0c28d", 1.8);
-  // boca
-  o += '<path d="M168 276Q200 322 232 276Q200 292 168 276Z" fill="#7a2a3a"/>';
-  o += '<path d="M184 286Q200 336 216 286Z" fill="#ff7f9c" stroke="#d9526f" stroke-width="2" stroke-linejoin="round"/><path d="M200 290V318" stroke="#d9526f" stroke-width="2" stroke-linecap="round"/>';
-  o += '<path d="M200 262V276M200 276Q188 288 172 282M200 276Q212 288 228 282" fill="none" stroke="#3a2a28" stroke-width="3" stroke-linecap="round"/>';
-  // nariz
-  o += '<path d="M178 246Q200 232 222 246Q222 266 200 272Q178 266 178 246Z" fill="#221615"/><ellipse cx="190" cy="248" rx="8" ry="4" fill="#fff" opacity=".55"/>';
-  // mejillas
-  o += '<circle cx="140" cy="262" r="12" fill="#ff9aa8" opacity=".35"/><circle cx="260" cy="262" r="12" fill="#ff9aa8" opacity=".35"/>';
-  // gafas de sol
-  o += '<g>';
-  o += '<path d="M108 192Q200 176 292 192" fill="none" stroke="#10151f" stroke-width="7" stroke-linecap="round"/>';
-  o += '<path d="M116 190Q150 184 188 190Q192 238 160 246Q124 246 116 214Q112 198 116 190Z" fill="url(#dlens)" stroke="#0b0f19" stroke-width="4" stroke-linejoin="round"/>';
-  o += '<path d="M212 190Q250 184 284 190Q288 198 284 214Q276 246 240 246Q208 238 212 190Z" fill="url(#dlens)" stroke="#0b0f19" stroke-width="4" stroke-linejoin="round"/>';
-  o += '<path d="M130 198Q146 194 160 196L138 232Q126 222 130 198Z" fill="#fff" opacity=".3"/><path d="M226 198Q242 194 256 196L234 232Q222 222 226 198Z" fill="#fff" opacity=".3"/>';
-  o += '<path d="M112 190L94 176M288 190L306 176" stroke="#10151f" stroke-width="6" stroke-linecap="round"/></g>';
-  // flequillo sobre las gafas
-  o += '<path d="M120 172Q140 150 170 160Q165 178 150 184ZM230 160Q262 148 282 172Q262 180 250 184Q238 176 230 160Z" fill="url(#dfur)" stroke="#d3b27c" stroke-width="2" opacity=".95"/>';
-  // brillos
-  o += '<g fill="#fff" opacity=".9"><path d="M335 300l5 14 14 5-14 5-5 14-5-14-14-5 14-5z"/><path d="M62 250l3 9 9 3-9 3-3 9-3-9-9-3 9-3z"/></g>';
+  // ears
+  o += '<path d="M112 150Q58 150 52 232Q50 280 92 282Q124 280 134 226Z" fill="#e0ad6c" stroke="' + K + '" stroke-width="5" stroke-linejoin="round"/>';
+  o += '<path d="M288 150Q342 150 348 232Q350 280 308 282Q276 280 266 226Z" fill="#e0ad6c" stroke="' + K + '" stroke-width="5" stroke-linejoin="round"/>';
+  o += '<path d="M78 190Q66 232 84 262M322 190Q334 232 316 262" fill="none" stroke="#f5cf93" stroke-width="6" stroke-linecap="round"/>';
+  o += '<path d="M112 160Q130 200 134 226M288 160Q270 200 266 226" fill="none" stroke="#b9823f" stroke-width="4" stroke-linecap="round" opacity=".6"/>';
+  // head fluffy
+  o += '<path d="' + puff(200, 205, 112, 100, 16, 0.12, 0, 2 * P) + 'Z" fill="#fff3da" stroke="' + K + '" stroke-width="5" stroke-linejoin="round"/>';
+  // chin/cheek shading
+  o += '<path d="M104 236Q130 308 200 312Q270 308 296 236Q280 290 200 292Q120 290 104 236Z" fill="#ecd2a4" opacity=".7"/>';
+  // top tuft
+  o += '<path d="M168 112Q150 80 178 74Q180 90 192 98Q196 70 214 66Q214 88 224 100Q240 82 252 92Q242 104 242 116Z" fill="#fff3da" stroke="' + K + '" stroke-width="5" stroke-linejoin="round"/>';
+  // muzzle
+  o += '<ellipse cx="200" cy="262" rx="62" ry="46" fill="#fffaf0" stroke="' + K + '" stroke-width="4"/>';
+  // mouth
+  o += '<path d="M164 280Q200 340 236 280Q200 296 164 280Z" fill="#6e1f30" stroke="' + K + '" stroke-width="4" stroke-linejoin="round"/>';
+  o += '<path d="M182 294Q200 344 218 294Q200 304 182 294Z" fill="#ff7d9a" stroke="' + K + '" stroke-width="3.5" stroke-linejoin="round"/><path d="M200 300V322" stroke="#d94d6e" stroke-width="3" stroke-linecap="round"/>';
+  o += '<path d="M200 266V282M200 282Q186 292 168 284M200 282Q214 292 232 284" fill="none" stroke="' + K + '" stroke-width="4" stroke-linecap="round"/>';
+  // nose
+  o += '<path d="M174 246Q200 228 226 246Q228 270 200 276Q172 270 174 246Z" fill="#241615" stroke="' + K + '" stroke-width="3" stroke-linejoin="round"/><ellipse cx="188" cy="247" rx="10" ry="4.5" fill="#fff" opacity=".6"/>';
+  // cheeks
+  o += '<circle cx="136" cy="262" r="13" fill="#ff9aa8" opacity=".45"/><circle cx="264" cy="262" r="13" fill="#ff9aa8" opacity=".45"/>';
+  // sunglasses
+  o += '<path d="M104 190Q200 172 296 190" fill="none" stroke="' + K + '" stroke-width="8" stroke-linecap="round"/>';
+  o += '<path d="M112 188H190Q196 240 162 250Q122 250 112 214Q108 196 112 188Z" fill="url(#dlens)" stroke="' + K + '" stroke-width="5" stroke-linejoin="round"/>';
+  o += '<path d="M210 188H288Q292 196 288 214Q278 250 238 250Q204 240 210 188Z" fill="url(#dlens)" stroke="' + K + '" stroke-width="5" stroke-linejoin="round"/>';
+  o += '<path d="M126 198L150 198L128 236Q118 224 126 198ZM222 198L246 198L224 236Q214 224 222 198Z" fill="#fff" opacity=".32"/>';
+  o += '<path d="M160 200L170 200L156 224L148 224Z M256 200L266 200L252 224L244 224Z" fill="#fff" opacity=".45"/>';
+  o += '<path d="M104 190L86 176M296 190L314 176" stroke="' + K + '" stroke-width="7" stroke-linecap="round"/>';
+  // fringe
+  o += '<path d="M116 176Q134 150 168 160Q164 178 150 184Z M232 160Q268 148 286 176Q268 182 252 184Q240 176 232 160Z" fill="#fff3da" stroke="' + K + '" stroke-width="4" stroke-linejoin="round"/>';
+  // shaggy tufts
+  o += '<path d="M96 246L78 258L98 262L84 278L106 274L100 290L124 270Z M304 246L322 258L302 262L316 278L294 274L300 290L276 270Z" fill="#fff3da" stroke="' + K + '" stroke-width="4" stroke-linejoin="round"/>';
+  o += '<path d="M196 66Q186 46 200 36M214 70Q222 50 236 46M178 74Q166 58 170 44" fill="none" stroke="' + K + '" stroke-width="4" stroke-linecap="round"/>';
+  // sparkles
+  o += '<g fill="#fff"><path d="M338 300l5 15 15 5-15 5-5 15-5-15-15-5 15-5z"/><path d="M58 250l3 9 9 3-9 3-3 9-3-9-9-3 9-3z"/></g>';
   return o + '</svg>';
 }
 document.getElementById('dog').outerHTML = dogLogo();
