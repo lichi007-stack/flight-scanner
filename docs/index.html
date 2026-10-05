@@ -28,7 +28,7 @@
   .hero { position:relative; overflow:hidden; padding:34px 16px clamp(150px,24vw,270px); background:linear-gradient(180deg,var(--sky0) 0%,var(--sky1) 48%,var(--sky2) 100%); color:#06324a; }
   @media (prefers-color-scheme: dark) { .hero { color:#eaf7fa; } }
   .brand { display:flex; align-items:center; gap:16px; }
-  .logo { width:clamp(92px,19vw,132px); height:auto; flex:none; filter:drop-shadow(0 6px 12px rgba(0,50,80,.3)); }
+  .logo { width:clamp(92px,19vw,132px); height:auto; flex:none; border-radius:50%; box-shadow:0 8px 18px rgba(0,50,80,.35); }
   .hero-in { position:relative; z-index:2; max-width:900px; margin:0 auto; }
   .badge { display:inline-block; padding:4px 14px; border-radius:99px; background:rgba(255,255,255,.6); font-weight:700; font-size:.85rem; letter-spacing:.04em; backdrop-filter:blur(4px); }
   @media (prefers-color-scheme: dark) { .badge { background:rgba(255,255,255,.14); } }
@@ -85,7 +85,7 @@
 </style>
 </head>
 <body>
-<header class="hero"><div class="hero-in"><div class="brand"><span id="dog"></span><div><span class="badge">TLV · נתב"ג ✈ העולם</span><h1>ליציטורס</h1></div></div><p class="sub">לאן טסים הפעם? 🌴 סורקים טיסות זולות מנתב"ג כל יום ומתריעים כשהמחיר יורד.</p></div><div id="sky"></div><svg class="wave" viewBox="0 0 1200 34" preserveAspectRatio="none" aria-hidden="true"><path d="M0,16 C150,34 350,0 600,16 C850,34 1050,4 1200,16 L1200,34 L0,34 Z"/></svg></header>
+<header class="hero"><div class="hero-in"><div class="brand"><img class="logo" alt="יצי" width="132" height="132" src="data:image/webp;base64,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"><div><span class="badge">TLV · נתב"ג ✈ העולם</span><h1>ליציטורס</h1></div></div><p class="sub">לאן טסים הפעם? 🌴 סורקים טיסות זולות מנתב"ג כל יום ומתריעים כשהמחיר יורד.</p></div><div id="sky"></div><svg class="wave" viewBox="0 0 1200 34" preserveAspectRatio="none" aria-hidden="true"><path d="M0,16 C150,34 350,0 600,16 C850,34 1050,4 1200,16 L1200,34 L0,34 Z"/></svg></header>
 
 <main class="wrap">
   <div id="msg" role="alert"></div>
@@ -175,77 +175,7 @@ function skylineSVG() {
     '<path fill="url(#sea)" d="' + wave(334, 5, 50, true) + '"/><path class="foam" d="' + wave(334, 5, 50, false) + '"/>' +
     '<path class="foam2" d="' + wave(350, 6, 60, false) + '"/><path class="foam2" d="' + wave(370, 6, 70, false) + '"/>' + boat + '</svg>';
 }
-function dogLogo() {
-  var P = Math.PI, K = "#3a2620", o = "";
-  function puff(cx, cy, rx, ry, n, d, a0, a1) {
-    var s = "", i, t, x, y, m, mx, my;
-    for (i = 0; i <= n; i++) {
-      t = a0 + (a1 - a0) * i / n; x = cx + Math.cos(t) * rx; y = cy + Math.sin(t) * ry;
-      if (i === 0) { s += "M" + x.toFixed(1) + "," + y.toFixed(1); continue; }
-      m = a0 + (a1 - a0) * (i - 0.5) / n; mx = cx + Math.cos(m) * rx * (1 + d); my = cy + Math.sin(m) * ry * (1 + d);
-      s += "Q" + mx.toFixed(1) + "," + my.toFixed(1) + " " + x.toFixed(1) + "," + y.toFixed(1);
-    }
-    return s;
-  }
-  o += '<svg class="logo" viewBox="0 0 400 400" role="img" aria-label="יצי"><defs>' +
-    '<linearGradient id="dbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#52cdf0"/><stop offset="1" stop-color="#1fa7b8"/></linearGradient>' +
-    '<radialGradient id="dsun" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fffbe0"/><stop offset=".6" stop-color="#ffe9a6" stop-opacity=".9"/><stop offset="1" stop-color="#ffe9a6" stop-opacity="0"/></radialGradient>' +
-    '<linearGradient id="dlens" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34425c"/><stop offset="1" stop-color="#0c111c"/></linearGradient>' +
-    '<clipPath id="dclip"><circle cx="200" cy="200" r="180"/></clipPath></defs>';
-  o += '<circle cx="200" cy="200" r="192" fill="#fff"/><circle cx="200" cy="200" r="180" fill="url(#dbg)" stroke="' + K + '" stroke-width="5"/>';
-  o += '<g clip-path="url(#dclip)">';
-  o += '<circle cx="305" cy="95" r="78" fill="url(#dsun)"/>';
-  o += '<g fill="#fff" opacity=".9"><ellipse cx="92" cy="92" rx="34" ry="10"/><ellipse cx="76" cy="84" rx="15" ry="10"/><ellipse cx="104" cy="80" rx="19" ry="12"/></g>';
-  // sea + wave at bottom
-  o += '<path d="M0 330Q50 312 100 330T200 330T300 330T400 330V400H0Z" fill="#17a3b6" opacity=".55"/>';
-  // body
-  o += '<path d="' + puff(200, 400, 150, 118, 12, 0.1, P, 2 * P) + 'Z" fill="#fff3da" stroke="' + K + '" stroke-width="5" stroke-linejoin="round"/>';
-  o += '<path d="M70 392Q120 330 200 330Q280 330 330 392Z" fill="#f0d9b0" opacity=".55"/>';
-  // harness
-  o += '<path d="M112 306Q200 340 288 306L300 336Q200 376 100 336Z" fill="#8a5bd0" stroke="' + K + '" stroke-width="5" stroke-linejoin="round"/>';
-  o += '<path d="M184 346H216L226 410H174Z" fill="#8a5bd0" stroke="' + K + '" stroke-width="5" stroke-linejoin="round"/>';
-  o += '<path d="M124 312Q200 340 276 312L282 322Q200 352 118 322Z" fill="#b48cf0" opacity=".65"/>';
-  o += '<circle cx="200" cy="344" r="12" fill="#ffd45a" stroke="' + K + '" stroke-width="4"/><circle cx="196" cy="340" r="3.5" fill="#fff" opacity=".8"/>';
-  o += '</g>';
-  // ears
-  o += '<path d="M112 150Q58 150 52 232Q50 280 92 282Q124 280 134 226Z" fill="#e0ad6c" stroke="' + K + '" stroke-width="5" stroke-linejoin="round"/>';
-  o += '<path d="M288 150Q342 150 348 232Q350 280 308 282Q276 280 266 226Z" fill="#e0ad6c" stroke="' + K + '" stroke-width="5" stroke-linejoin="round"/>';
-  o += '<path d="M78 190Q66 232 84 262M322 190Q334 232 316 262" fill="none" stroke="#f5cf93" stroke-width="6" stroke-linecap="round"/>';
-  o += '<path d="M112 160Q130 200 134 226M288 160Q270 200 266 226" fill="none" stroke="#b9823f" stroke-width="4" stroke-linecap="round" opacity=".6"/>';
-  // head fluffy
-  o += '<path d="' + puff(200, 205, 112, 100, 16, 0.12, 0, 2 * P) + 'Z" fill="#fff3da" stroke="' + K + '" stroke-width="5" stroke-linejoin="round"/>';
-  // chin/cheek shading
-  o += '<path d="M104 236Q130 308 200 312Q270 308 296 236Q280 290 200 292Q120 290 104 236Z" fill="#ecd2a4" opacity=".7"/>';
-  // top tuft
-  o += '<path d="M168 112Q150 80 178 74Q180 90 192 98Q196 70 214 66Q214 88 224 100Q240 82 252 92Q242 104 242 116Z" fill="#fff3da" stroke="' + K + '" stroke-width="5" stroke-linejoin="round"/>';
-  // muzzle
-  o += '<ellipse cx="200" cy="262" rx="62" ry="46" fill="#fffaf0" stroke="' + K + '" stroke-width="4"/>';
-  // mouth
-  o += '<path d="M164 280Q200 340 236 280Q200 296 164 280Z" fill="#6e1f30" stroke="' + K + '" stroke-width="4" stroke-linejoin="round"/>';
-  o += '<path d="M182 294Q200 344 218 294Q200 304 182 294Z" fill="#ff7d9a" stroke="' + K + '" stroke-width="3.5" stroke-linejoin="round"/><path d="M200 300V322" stroke="#d94d6e" stroke-width="3" stroke-linecap="round"/>';
-  o += '<path d="M200 266V282M200 282Q186 292 168 284M200 282Q214 292 232 284" fill="none" stroke="' + K + '" stroke-width="4" stroke-linecap="round"/>';
-  // nose
-  o += '<path d="M174 246Q200 228 226 246Q228 270 200 276Q172 270 174 246Z" fill="#241615" stroke="' + K + '" stroke-width="3" stroke-linejoin="round"/><ellipse cx="188" cy="247" rx="10" ry="4.5" fill="#fff" opacity=".6"/>';
-  // cheeks
-  o += '<circle cx="136" cy="262" r="13" fill="#ff9aa8" opacity=".45"/><circle cx="264" cy="262" r="13" fill="#ff9aa8" opacity=".45"/>';
-  // sunglasses
-  o += '<path d="M104 190Q200 172 296 190" fill="none" stroke="' + K + '" stroke-width="8" stroke-linecap="round"/>';
-  o += '<path d="M112 188H190Q196 240 162 250Q122 250 112 214Q108 196 112 188Z" fill="url(#dlens)" stroke="' + K + '" stroke-width="5" stroke-linejoin="round"/>';
-  o += '<path d="M210 188H288Q292 196 288 214Q278 250 238 250Q204 240 210 188Z" fill="url(#dlens)" stroke="' + K + '" stroke-width="5" stroke-linejoin="round"/>';
-  o += '<path d="M126 198L150 198L128 236Q118 224 126 198ZM222 198L246 198L224 236Q214 224 222 198Z" fill="#fff" opacity=".32"/>';
-  o += '<path d="M160 200L170 200L156 224L148 224Z M256 200L266 200L252 224L244 224Z" fill="#fff" opacity=".45"/>';
-  o += '<path d="M104 190L86 176M296 190L314 176" stroke="' + K + '" stroke-width="7" stroke-linecap="round"/>';
-  // fringe
-  o += '<path d="M116 176Q134 150 168 160Q164 178 150 184Z M232 160Q268 148 286 176Q268 182 252 184Q240 176 232 160Z" fill="#fff3da" stroke="' + K + '" stroke-width="4" stroke-linejoin="round"/>';
-  // shaggy tufts
-  o += '<path d="M96 246L78 258L98 262L84 278L106 274L100 290L124 270Z M304 246L322 258L302 262L316 278L294 274L300 290L276 270Z" fill="#fff3da" stroke="' + K + '" stroke-width="4" stroke-linejoin="round"/>';
-  o += '<path d="M196 66Q186 46 200 36M214 70Q222 50 236 46M178 74Q166 58 170 44" fill="none" stroke="' + K + '" stroke-width="4" stroke-linecap="round"/>';
-  // sparkles
-  o += '<g fill="#fff"><path d="M338 300l5 15 15 5-15 5-5 15-5-15-15-5 15-5z"/><path d="M58 250l3 9 9 3-9 3-3 9-3-9-9-3 9-3z"/></g>';
-  return o + '</svg>';
-}
-document.getElementById('dog').outerHTML = dogLogo();
-(function(){try{var l=document.createElement('link');l.rel='icon';l.href='data:image/svg+xml,'+encodeURIComponent(dogLogo().replace('<svg class="logo"','<svg xmlns="http://www.w3.org/2000/svg"'));document.head.appendChild(l);}catch(e){}})();
+(function(){var i=document.querySelector('img.logo');if(!i)return;var l=document.createElement('link');l.rel='icon';l.href=i.src;document.head.appendChild(l);})();
 document.getElementById('sky').innerHTML = skylineSVG();
 
 // ===== הגדרות חיבור ל-Supabase (המפתח ציבורי, לא service_role) =====
