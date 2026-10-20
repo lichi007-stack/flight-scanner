@@ -96,6 +96,9 @@
   .mcell.in { background:color-mix(in srgb,var(--accent) 16%,var(--field)); border-color:var(--accent); }
   .mcell.edge { background:var(--accent); border-color:var(--accent); color:#fff; }
   .mcell.edge span { color:#fff; opacity:.85; }
+    .pricerow { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .gflink { display:inline-flex; align-items:center; gap:4px; font-size:.82rem; font-weight:600; color:#fff; background:var(--accent); border-radius:999px; padding:5px 12px; text-decoration:none; white-space:nowrap; }
+  .gflink:hover { filter:brightness(1.08); }
   </style>
 </head>
 <body>
@@ -267,6 +270,12 @@ function show(loggedIn) {
   $("app").classList.toggle("hidden", !loggedIn);
 }
 
+function gflightsUrl(w, h) {
+  const d1 = String(h.departure_at || "").slice(0, 10), d2 = String(h.return_at || "").slice(0, 10);
+  const q = "Flights from TLV to " + w.destination + " on " + d1 + (d2 ? " through " + d2 : "") + (h.transfers === 0 ? " nonstop" : "");
+  return "https://www.google.com/travel/flights?hl=he&curr=USD&q=" + encodeURIComponent(q);
+}
+
 async function load() {
   const res = await sb.from("watches").select("*").order("created_at", { ascending: false });
   if (res.error) return msg("שגיאה בטעינה: " + res.error.message);
@@ -292,7 +301,8 @@ async function load() {
       priceHtml = '<div class="small">הסריקה הבאה תעדכן כאן מחיר</div>';
     } else {
       status = isDeal ? '<span class="pill deal">🔥 מתחת לתקרה!</span>' : '<span class="pill wait">עדיין יקר</span>';
-      priceHtml = '<div class="price ' + (isDeal ? "good" : "") + '">$' + Math.round(h.min_price) + '</div>' +
+      priceHtml = '<div class="pricerow"><div class="price ' + (isDeal ? "good" : "") + '">$' + Math.round(h.min_price) + '</div>' +
+        '<a class="gflink" target="_blank" rel="noopener" href="' + esc(gflightsUrl(w, h)) + '" title="פתיחה בגוגל פלייטס">🔎 גוגל פלייטס</a></div>' +
         '<div class="small">' + fmtDate(h.departure_at) + " ← " + fmtDate(h.return_at) + (h.transfers === 0 ? " · ישירה" : "") + '</div>' +
         '<div class="small">נסרק ב-' + fmtDate(h.scanned_on) + '</div>';
     }
